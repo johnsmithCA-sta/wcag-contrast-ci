@@ -1,0 +1,163 @@
+# CI Gate · 对比度与 CSS Token 卫生自动化门禁
+# CI Gate for Contrast & CSS Token Hygiene
+
+> **零第三方依赖（仅 Python 标准库）· 可独立分发作 CI 门禁 · 一行命令接入 GitHub Actions**
+> **Zero third-party dependencies (Python standard library only) · Ship as a standalone CI gate · One-line integration with GitHub Actions**
+
+---
+
+## 它能做什么 / What it does
+
+**两个独立的 Python 标准库脚本**，直接 `cp` 到 CI 流水线即可跑：
+
+**Two independent Python-standard-library scripts. Copy them straight into your CI pipeline.**
+
+### `contrast_checker.py` — 对比度门禁 / Contrast Gate
+
+批量校验前景 / 背景色对的 WCAG 2.x 对比度，支持 normal / large / ui 三种达标线，默认 AA 级。失守即退出码 1，CI 步骤失败。
+
+Batch-validates WCAG 2.x contrast ratios for foreground/background color pairs. Supports `normal` / `large` / `ui` thresholds (WCAG AA defaults). Exit code 1 on failure — CI step fails.
+
+```bash
+cat > color-pairs.txt <<'EOF'
+#ffffff,#1a2c44,normal
+#64748d,#ffffff,normal
+#ffffff,#533afd,ui
+EOF
+
+python3 contrast_checker.py --file color-pairs.txt --fail-on-issues
+```
+
+### `extract_css_vars.py` — CSS Token 卫生门禁 / CSS Token Hygiene Gate
+
+递归扫描 `*.css`，提取 `var()` 定义与引用、硬编码色值、无人使用的死 Token。支持自定义 Token 表核对（同语义双色值 / 可替换硬编码）。输出 Markdown 表 + 完整 JSON。
+
+Recursively scans `*.css` files for `var()` definitions, usages, hard-coded color values, and dead tokens. Supports a token-table check (semantic duplicates / replaceable hard-codes). Emits a Markdown table on stdout and a full JSON report.
+
+```bash
+python3 extract_css_vars.py --input dist/css/ --json token-report.json
+
+# 带 Token 表核对 / With token-table cross-check
+python3 extract_css_vars.py --input dist/css/ --token-table tokens.json \
+  --json token-report.json --min-usage 3
+```
+
+---
+
+## 为什么 CI 自动跑还不够：合规过了 ≠ 设计好 / Why CI automation alone isn't enough
+
+对比度失守只是 8 个维度里**最容易量化的一环**。
+
+视觉层级混乱、触控目标过小、Token 体系失控、信息密度失衡、文案扫读障碍、状态可识别性差……这些更难察觉的问题，才是真正拉低转化与体验的元凶——
+
+**合规过了 ≠ 设计好。** 自动化只能守住下限，剩下 7 个维度需要体系化的设计评估方法去发现和归因。
+
+We flag contrast failures because they are **the easiest of 8 dimensions to quantify**.
+
+But the real culprits behind conversion and UX regressions are far quieter: visual hierarchy collapse, undersized touch targets, an unstable token system, mismatched information density, broken scannability, indistinguishable states.
+
+**Compliance passed ≠ good design.** Automation only enforces the floor. The remaining seven dimensions require a systematic evaluation methodology to surface and attribute.
+
+> 完整设计评估体系（八维评分 · 锚定量表 · 失分模式库 · 案例归因 SOP）正在内测，
+> 商业版面向团队授权与持续校准更新订阅。免费版守住下限，商业版托起上限。
+>
+> *A full design evaluation methodology (8-dimension scoring · anchoring scale · failure-pattern library · case-attribution SOP) is in private beta. The commercial release ships as a team license plus calibration-update subscription. Free version guards the floor; the commercial release carries the ceiling.*
+
+---
+
+## 示例评估演示 / A Demo of the Methodology in Action
+
+下面是同一份截图与「眯眼测试」前后对比——左侧是常规视图，右侧是色块网格化后的视觉重量分布。眯眼（模糊）后第一焦点在哪里、应该在哪里，是判断「视觉层级是否错位」的快速工具。
+
+Below: a side-by-side of a regular screenshot versus its color-block grid (the "squint test"). Where does the dominant mass land after blurring — and where should it land? A fast read on whether the visual hierarchy is misaligned.
+
+![blur_grid 对比演示](./docs/blur_grid_compare.png)
+
+| 区域 / Region | 原图直觉 / In the original | 眯眼后 / After blur |
+|---|---|---|
+| 主标题区 / Headline | 字号偏小、层级弱 | 几乎「空」 |
+| KPI 卡群 / KPI cards | 标签浅、数值大 | **视觉重量最重的色块** |
+| 主按钮 / Primary CTA | 白字浅底，对比度不足 | 模糊后仅剩一团淡色 |
+
+> 评估时眯眼看一眼：焦点是落在页面想要用户行动的位置上吗？——对比度门禁不会告诉你答案。
+
+---
+
+## 商业版内测预约 / Commercial Beta Waitlist
+
+商业版内测中。如希望团队优先体验完整体系（八维评分 · 锚定量表 · 失分模式库 · 持续校准更新），可加入意向名单：
+
+*The commercial release is in private beta. If you'd like your team to trial the full methodology (8-dimension scoring · anchoring scale · failure-pattern library · continuous calibration updates), join the waitlist:*
+
+- 📬 **邮件预约** / Email: `wcag-gate@等待名单.example` *(正式邮箱将在 v0.2 上线时启用)*
+- 📋 **问卷登记** / Survey form: `https://waitinglist.example/wcag-gate` *(同上，即将上线)*
+- 💬 **GitHub Issue** 留言 / Drop a comment in [Issues](../../issues) 并打 `commercial-beta` 标签 — 我们手动跟进
+
+> 商业版不卖包代码、只卖授权与校准更新订阅：技能包一旦外发即不可控，能锁住的是随时间增值的实证资产与方法论持续校准。
+> *Commercial version is licensed access + calibration-update subscription, not a packaged binary: skill contents cannot be controlled once shipped; the lasting value is in the empirically-calibrated assets and the continuous methodology update.*
+
+---
+
+## GitHub Actions 接入 / GitHub Actions Integration
+
+```yaml
+name: a11y-contrast-gate
+on: [pull_request]
+jobs:
+  contrast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir -p ci-tools && cd ci-tools
+          curl -sSL https://raw.githubusercontent.com/johnsmithCA-sta/wcag-contrast-ci/main/contrast_checker.py -o contrast_checker.py
+          curl -sSL https://raw.githubusercontent.com/johnsmithCA-sta/wcag-contrast-ci/main/extract_css_vars.py -o extract_css_vars.py
+          python3 ci-tools/contrast_checker.py --file .a11y/color-pairs.txt --fail-on-issues
+          python3 ci-tools/extract_css_vars.py --input dist/css/ --json token-report.json
+```
+
+---
+
+## 退出码约定 / Exit Code Convention
+
+| 工具 / Tool | 场景 / Scenario | 退出码 / Exit |
+|---|---|---|
+| `contrast_checker` | 全部达标 / All pass | `0` |
+| `contrast_checker` | 有失守且未指定 `--fail-on-issues` / Failures without `--fail-on-issues` | `0` |
+| `contrast_checker` | `--fail-on-issues` 且存在失守色对 / Failures with `--fail-on-issues` | `1` |
+| `contrast_checker` | 参数/输入错误 / Argument or input error | `2` |
+| `extract_css_vars` | 正常完成 / Completed (parse JSON for hard-coded/dead-token signals) | `0` |
+| `extract_css_vars` | 参数/输入错误 / Argument or input error | `2` |
+
+---
+
+## 信任背书 / Trust Signal
+
+- ✅ **通过 10 组回归测试**（公开标准用例，含已知失守色对、Token 卫生正向/反向用例）
+- ✅ **零第三方依赖**：纯 Python 标准库，无 `pip install`，适合锁定运行时环境
+- ✅ **MIT 协议**，可自由 fork、改用、商用，无需署名（仅保留版权声明即可）
+
+*Passes 10 regression test groups (public standard fixtures: known-failing color pairs, token-hygiene positive/negative cases).*
+*Zero third-party dependencies — pure Python standard library, no `pip install`, safe for locked environments.*
+*MIT licensed — fork, modify, ship commercially without attribution (copyright notice preserved as-is is sufficient).*
+
+---
+
+## 法律免责声明 / Legal Disclaimer
+
+本仓库脚本是**设计质量门禁工具**，不是法律合规认证。
+WCAG / ADA / EN 301 549 等正式无障碍审计须由持证机构出具。
+
+*This repository is a **design-quality gating tool**, not a legal-compliance certification.*
+*Formal WCAG / ADA / EN 301 549 accessibility audits must be issued by accredited bodies.*
+
+---
+
+## 协议 / License
+
+[MIT](./LICENSE) · Copyright © 2026 johnsmithCA-sta
+商业版另议授权条款 / Commercial version uses a separate license — see the waitlist note above.
+
+---
+
+<sub>From the **[完整设计评估体系](商业版内测)** by johnsmithCA-sta · v0.1.0 · 2026-09-01</sub>
