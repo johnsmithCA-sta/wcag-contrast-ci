@@ -1,8 +1,8 @@
 # CI Gate · 对比度与 CSS Token 卫生自动化门禁
 # CI Gate for Contrast & CSS Token Hygiene
 
-> **零第三方依赖（仅 Python 标准库）· 可独立分发作 CI 门禁 · 一行命令接入 GitHub Actions**
-> **Zero third-party dependencies (Python standard library only) · Ship as a standalone CI gate · One-line integration with GitHub Actions**
+> **零第三方依赖（仅 Python 标准库）· 可独立分发作 CI 门禁 · 五分钟接入 GitHub Actions**
+> **Zero third-party dependencies (Python standard library only) · Ship as a standalone CI gate · Five-minute integration with GitHub Actions**
 
 ---
 
@@ -61,7 +61,7 @@ But the real culprits behind conversion and UX regressions are far quieter: visu
 > 完整设计评估体系（八维评分 · 锚定量表 · 失分模式库 · 案例归因 SOP）正在内测，
 > 商业版面向团队授权与持续校准更新订阅。免费版守住下限，商业版托起上限。
 >
-> *A full design evaluation methodology (8-dimension scoring · anchoring scale · failure-pattern library · case-attribution SOP) is in private beta. The commercial release ships as a team license plus calibration-update subscription. Free version guards the floor; the commercial release carries the ceiling.*
+> *A full design evaluation methodology (8-dimension scoring · anchoring scale · failure-pattern library · case-attribution SOP) is in private beta. The commercial release ships as a team license plus calibration-update subscription. Free version guards the floor; the commercial release raises the ceiling.*
 
 ---
 
@@ -80,6 +80,12 @@ Below: a side-by-side of a regular screenshot versus its color-block grid (the "
 | 主按钮 / Primary CTA | 白字浅底，对比度不足 | 模糊后仅剩一团淡色 |
 
 > 评估时眯眼看一眼：焦点是落在页面想要用户行动的位置上吗？——对比度门禁不会告诉你答案。
+>
+> *Squint at it: does the focus land where the page wants users to act? A contrast gate won't tell you.*
+
+> 完整示例报告（B 端看板实跑 + 两个行业虚构样张）与体检卡样张见 [`examples/`](./examples/)。免费脚本输出为机器可读的对比度 / Token 检查结果；示例报告展示的是商业版完整评估的输出形态。
+>
+> *Full sample reports (a real-run B2B dashboard plus two fictional industry samples) and the health-card sample live in [`examples/`](./examples/). The free scripts emit machine-readable contrast/token checks; the sample reports demonstrate the commercial version's full evaluation output.*
 
 ---
 
@@ -89,12 +95,8 @@ Below: a side-by-side of a regular screenshot versus its color-block grid (the "
 
 *The commercial release is in private beta. If you'd like your team to trial the full methodology (8-dimension scoring · anchoring scale · failure-pattern library · continuous calibration updates), join the waitlist:*
 
-- 📬 **邮件预约** / Email: `wcag-gate@等待名单.example` *(正式邮箱将在 v0.2 上线时启用)*
-- 📋 **问卷登记** / Survey form: `https://waitinglist.example/wcag-gate` *(同上，即将上线)*
-- 💬 **GitHub Issue** 留言 / Drop a comment in [Issues](../../issues) 并打 `commercial-beta` 标签 — 我们手动跟进
-
-> 商业版不卖包代码、只卖授权与校准更新订阅：技能包一旦外发即不可控，能锁住的是随时间增值的实证资产与方法论持续校准。
-> *Commercial version is licensed access + calibration-update subscription, not a packaged binary: skill contents cannot be controlled once shipped; the lasting value is in the empirically-calibrated assets and the continuous methodology update.*
+- 💬 **GitHub Issue** 留言 / Drop a comment in [Issues](../../issues)：标题含 `[commercial-beta]`，我们手动跟进 / *Title your issue with `[commercial-beta]` and we'll follow up manually.*
+- 📬 邮件预约与问卷登记将于 v0.2 上线时开放 / *Email and survey sign-up will open at v0.2.*
 
 ---
 
@@ -109,9 +111,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          mkdir -p ci-tools && cd ci-tools
-          curl -sSL https://raw.githubusercontent.com/johnsmithCA-sta/wcag-contrast-ci/main/contrast_checker.py -o contrast_checker.py
-          curl -sSL https://raw.githubusercontent.com/johnsmithCA-sta/wcag-contrast-ci/main/extract_css_vars.py -o extract_css_vars.py
+          mkdir -p ci-tools
+          curl -sSL https://raw.githubusercontent.com/johnsmithCA-sta/wcag-contrast-ci/main/contrast_checker.py -o ci-tools/contrast_checker.py
+          curl -sSL https://raw.githubusercontent.com/johnsmithCA-sta/wcag-contrast-ci/main/extract_css_vars.py -o ci-tools/extract_css_vars.py
           python3 ci-tools/contrast_checker.py --file .a11y/color-pairs.txt --fail-on-issues
           python3 ci-tools/extract_css_vars.py --input dist/css/ --json token-report.json
 ```
@@ -160,4 +162,4 @@ WCAG / ADA / EN 301 549 等正式无障碍审计须由持证机构出具。
 
 ---
 
-<sub>From the **[完整设计评估体系](商业版内测)** by johnsmithCA-sta · v0.1.0 · 2026-09-01</sub>
+<sub>From the **完整设计评估体系**（commercial beta — see waitlist above）by johnsmithCA-sta · v0.1.0 · 2026-09-01</sub>
