@@ -10,10 +10,15 @@ Catches the failures that code review misses and that reach production: **a colo
 **Install / 安装**
 
 ```bash
+# 作为 Agent Skill 安装 / Install as an Agent Skill
+npx skills add johnsmithCA-sta/wcag-contrast-ci
+# or / 或
 skillhub install wcag-contrast-ci --namespace user_65c8c185
 # or / 或
 git clone https://github.com/johnsmithCA-sta/wcag-contrast-ci.git
 ```
+
+> 技能包本体位于 [`skills/wcag-contrast-ci/`](./skills/wcag-contrast-ci/)（`SKILL.md` + `scripts/`），供依赖 GitHub 抓取的 Agent Skill 索引站收录。其中的脚本与仓库根目录的 CI 脚本是两份实体副本，改动请同步两边 / *The skill package lives in `skills/wcag-contrast-ci/` for Agent Skill indexers that crawl GitHub. Scripts there are a physical copy of the repo-root CI scripts — keep both in sync.*
 
 ---
 
