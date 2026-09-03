@@ -1,6 +1,22 @@
 # CI Gate · 对比度与 CSS Token 卫生自动化门禁
 # CI Gate for Contrast & CSS Token Hygiene
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) ![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg) ![Release](https://img.shields.io/badge/Release-v0.1.1-green.svg) ![SkillHub](https://img.shields.io/badge/SkillHub-@user_65c8c185%2Fwcag-contrast-ci-orange.svg)
+
+**English** — A CI gate for WCAG contrast and CSS token hygiene. Fails the build on contrast regressions and design-token drift. Pure Python standard library, zero third-party dependencies.
+
+Catches the failures that code review misses and that reach production: **a colour pair that dropped below AA, a token that silently changed, a hardcoded hex that bypassed the system**.
+
+**Install / 安装**
+
+```bash
+skillhub install wcag-contrast-ci --namespace user_65c8c185
+# or / 或
+git clone https://github.com/johnsmithCA-sta/wcag-contrast-ci.git
+```
+
+---
+
 > **零第三方依赖（仅 Python 标准库）· 可独立分发作 CI 门禁 · 五分钟接入 GitHub Actions**
 > **Zero third-party dependencies (Python standard library only) · Ship as a standalone CI gate · Five-minute integration with GitHub Actions**
 
