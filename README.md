@@ -95,8 +95,8 @@ Below: a side-by-side of a regular screenshot versus its color-block grid (the "
 
 *The commercial release is in private beta. If you'd like your team to trial the full methodology (8-dimension scoring · anchoring scale · failure-pattern library · continuous calibration updates), join the waitlist:*
 
-- 💬 **GitHub Issue** 留言 / Drop a comment in [Issues](../../issues)：标题含 `[commercial-beta]`，我们手动跟进 / *Title your issue with `[commercial-beta]` and we'll follow up manually.*
-- 📬 邮件预约与问卷登记将于 v0.2 上线时开放 / *Email and survey sign-up will open at v0.2.*
+- 📬 **邮件预约（推荐）** / *Email (preferred)*：`epcz6124@agent.qq.com`，主题含 `[commercial-beta]`，一两句话说明团队规模与想解决的设计问题即可 / *Subject line `[commercial-beta]`; a sentence on team size and the design problem you want solved is enough.*
+- 💬 **GitHub Issue 留言** / *Or open an [issue](../../issues)*：标题同样含 `[commercial-beta]` / *Title it `[commercial-beta]` too.* 介意公开联系方式请改用邮件 / *If you'd rather not post contact details publicly, email instead.*
 
 ---
 
@@ -162,4 +162,4 @@ WCAG / ADA / EN 301 549 等正式无障碍审计须由持证机构出具。
 
 ---
 
-<sub>From the **完整设计评估体系**（commercial beta — see waitlist above）by johnsmithCA-sta · v0.1.0 · 2026-09-01</sub>
+<sub>From the **完整设计评估体系**（commercial beta — see waitlist above）by johnsmithCA-sta · v0.1.1 · 2026-09-01</sub>
