@@ -1,0 +1,38 @@
+name: 商业版内测预约 / Commercial Beta Waitlist
+description: 申请优先体验完整设计评估体系 / Request early access to the full evaluation methodology
+title: "[commercial-beta] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢关注。完整体系（八维评分 · 锚定量表 · 失分模式库 · 持续校准更新）正在内测。
+        Thanks for your interest - the full methodology (8-dimension scoring, anchoring scale, failure-pattern library, continuous calibration) is in private beta.
+
+        **注意：Issue 内容公开可见。若不愿公开联系方式，请直接发邮件至 `epcz6124@agent.qq.com`（主题含 `[commercial-beta]`）。**
+        **Note: issue contents are public. If you prefer not to share contact details publicly, email `epcz6124@agent.qq.com` instead.**
+  - type: dropdown
+    id: team-size
+    attributes:
+      label: 团队规模 / Team size
+      options:
+        - 个人 / Solo (indie developer)
+        - 2-10
+        - 11-50
+        - 50+ / 50 人以上
+    validations:
+      required: false
+  - type: textarea
+    id: problem
+    attributes:
+      label: 想解决的设计问题 / What design problem are you trying to solve?
+      description: 例如：无障碍审计过不了、设计走查没有统一标准、设计系统 Token 失控 / e.g. failing accessibility audits, no shared design-review standard, design tokens getting out of hand
+    validations:
+      required: false
+  - type: checkboxes
+    id: contact
+    attributes:
+      label: 联系方式 / How should we reach you?
+      options:
+        - label: 我希望改用邮件私下沟通，作者可通过我提交 Issue 时所用账号的公开邮箱联系我 / Prefer email - the author may contact me at the public email on my GitHub account
+          required: false
