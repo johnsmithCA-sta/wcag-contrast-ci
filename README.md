@@ -1,7 +1,7 @@
 # CI Gate · 对比度与 CSS Token 卫生自动化门禁
 # CI Gate for Contrast & CSS Token Hygiene
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) ![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg) ![Release](https://img.shields.io/badge/Release-v0.1.2-green.svg) ![SkillHub](https://img.shields.io/badge/SkillHub-@user_65c8c185%2Fwcag-contrast-ci-orange.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) ![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg) ![Release](https://img.shields.io/badge/Release-v0.1.3-green.svg) ![SkillHub](https://img.shields.io/badge/SkillHub-@user_65c8c185%2Fwcag-contrast-ci-orange.svg)
 
 **English** — A CI gate for WCAG contrast and CSS token hygiene. Fails the build on contrast regressions and design-token drift. Pure Python standard library, zero third-party dependencies.
 
@@ -215,4 +215,4 @@ WCAG / ADA / EN 301 549 等正式无障碍审计须由持证机构出具。
 
 ---
 
-<sub>From the **完整设计评估体系** — available as **UI 设计评估 Pro** / *UI Design Evaluation Pro* (see above) — by johnsmithCA-sta · v0.1.2 · 2026-09-22</sub>
+<sub>From the **完整设计评估体系** — available as **UI 设计评估 Pro** / *UI Design Evaluation Pro* (see above) — by johnsmithCA-sta · v0.1.3 · 2026-09-22</sub>
