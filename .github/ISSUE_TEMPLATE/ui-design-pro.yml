@@ -1,0 +1,44 @@
+name: 商业版咨询 / UI Design Evaluation Pro
+description: 咨询完整设计评估体系（商业版 UI 设计评估 Pro）/ Questions about the commercial release
+title: "[ui-design-pro] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        完整设计评估体系（八维评分 · 锚定量表 · 失分模式库 · 案例归因 SOP）**已上线**，以独立技能 **UI 设计评估 Pro** 提供，**按次计费**：
+        `skillhub install ui-design-eval-pro --namespace user_65c8c185`
+
+        The full methodology (8-dimension scoring, anchoring scale, failure-pattern library, case-attribution SOP) is **live** as **UI Design Evaluation Pro**, billed per call:
+        `skillhub install ui-design-eval-pro --namespace user_65c8c185`
+
+        需要**团队授权、定制评估口径或批量评估**的，在这里留言即可。
+        For **team licensing, custom rubrics, or batch evaluation**, leave a note here.
+
+        **注意：Issue 内容公开可见。若不愿公开联系方式，请直接发邮件至 `epcz6124@agent.qq.com`（主题含 `[ui-design-pro]`）。**
+        **Note: issue contents are public. If you prefer not to share contact details publicly, email `epcz6124@agent.qq.com` with subject `[ui-design-pro]` instead.**
+  - type: dropdown
+    id: team-size
+    attributes:
+      label: 团队规模 / Team size
+      options:
+        - 个人 / Solo (indie developer)
+        - 2-10
+        - 11-50
+        - 50+ / 50 人以上
+    validations:
+      required: false
+  - type: textarea
+    id: problem
+    attributes:
+      label: 想解决的设计问题 / What design problem are you trying to solve?
+      description: 例如：无障碍审计过不了、设计走查没有统一标准、设计系统 Token 失控 / e.g. failing accessibility audits, no shared design-review standard, design tokens getting out of hand
+    validations:
+      required: false
+  - type: checkboxes
+    id: contact
+    attributes:
+      label: 联系方式 / How should we reach you?
+      options:
+        - label: 我希望改用邮件私下沟通，作者可通过我提交 Issue 时所用账号的公开邮箱联系我 / Prefer email - the author may contact me at the public email on my GitHub account
+          required: false

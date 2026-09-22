@@ -7,6 +7,11 @@
 
 Catches the failures that code review misses and that reach production: **a colour pair that dropped below AA, a token that silently changed, a hardcoded hex that bypassed the system**.
 
+> 🔎 **想要的不止对比度？** 商业版 **UI 设计评估 Pro** —— 一次调用交付八维量化评分 + S/A/B/C/D 定级 + P0–P2 分级修复建议。**按次计费、无需订阅**：
+> `skillhub install ui-design-eval-pro --namespace user_65c8c185`
+>
+> *Need more than contrast? The commercial **UI Design Evaluation Pro** returns 8-dimension scores, an S/A/B/C/D grade, and P0–P2 fixes in one call — **pay-per-call, no subscription**: `skillhub install ui-design-eval-pro --namespace user_65c8c185`*
+
 **Install / 安装**
 
 ```bash
@@ -79,10 +84,9 @@ But the real culprits behind conversion and UX regressions are far quieter: visu
 
 **Compliance passed ≠ good design.** Automation only enforces the floor. The remaining seven dimensions require a systematic evaluation methodology to surface and attribute.
 
-> 完整设计评估体系（八维评分 · 锚定量表 · 失分模式库 · 案例归因 SOP）正在内测，
-> 商业版面向团队授权与持续校准更新订阅。免费版守住下限，商业版托起上限。
+> 完整设计评估体系（八维评分 · 锚定量表 · 失分模式库 · 案例归因 SOP）**已上线**，以独立技能 **UI 设计评估 Pro** 提供 —— **按次调用、无需订阅**，安装入口见下方「商业版」。
 >
-> *A full design evaluation methodology (8-dimension scoring · anchoring scale · failure-pattern library · case-attribution SOP) is in private beta. The commercial release ships as a team license plus calibration-update subscription. Free version guards the floor; the commercial release raises the ceiling.*
+> *The full design evaluation methodology (8-dimension scoring · anchoring scale · failure-pattern library · case-attribution SOP) is **live** as a standalone skill, **UI Design Evaluation Pro** — pay per call, no subscription. See the commercial section below for the install command.*
 
 ---
 
@@ -110,14 +114,38 @@ Below: a side-by-side of a regular screenshot versus its color-block grid (the "
 
 ---
 
-## 商业版内测预约 / Commercial Beta Waitlist
+## 商业版：UI 设计评估 Pro / Commercial Release: UI Design Evaluation Pro
 
-商业版内测中。如希望团队优先体验完整体系（八维评分 · 锚定量表 · 失分模式库 · 持续校准更新），可加入意向名单：
+完整设计评估体系（八维评分 · 锚定量表 · 失分模式库 · 案例归因 SOP）已上线，作为独立技能 **UI 设计评估 Pro** 提供。免费脚本守住下限，商业版托起上限。
 
-*The commercial release is in private beta. If you'd like your team to trial the full methodology (8-dimension scoring · anchoring scale · failure-pattern library · continuous calibration updates), join the waitlist:*
+*The full design evaluation methodology is live as a standalone skill, **UI Design Evaluation Pro**. The free scripts guard the floor; the commercial release raises the ceiling.*
 
-- 📬 **邮件预约（推荐）** / *Email (preferred)*：`epcz6124@agent.qq.com`，主题含 `[commercial-beta]`，一两句话说明团队规模与想解决的设计问题即可 / *Subject line `[commercial-beta]`; a sentence on team size and the design problem you want solved is enough.*
-- 💬 **GitHub Issue 留言** / *Or open an [issue](../../issues)*：标题同样含 `[commercial-beta]` / *Title it `[commercial-beta]` too.* 介意公开联系方式请改用邮件 / *If you'd rather not post contact details publicly, email instead.*
+**安装 / Install**
+
+```bash
+skillhub install ui-design-eval-pro --namespace user_65c8c185
+```
+
+**一次调用交付 / One call returns**
+
+- 八维量化评分（布局网格 / 视觉层级 / 一致性 / 色彩 / 字体 / 简洁 / 可用性 / 数据可视化）
+- S / A / B / C / D 定级 + 门槛失守结论
+- P0 / P1 / P2 分级修复建议 —— 每条含**违反的标准**与**可量化的改后目标值**
+
+*8-dimension scores · an S/A/B/C/D grade with gate-failure verdicts · P0/P1/P2 fixes, each naming the criterion violated and a measurable target value.*
+
+**计费与前置条件 / Billing & prerequisites**
+
+- **按次计费**，金额由服务端账单下发，**以实际账单为准**；无订阅、无最低消费。
+- 需**宿主 Agent 支持 A402** —— 能识别 `402 Payment-Needed` 头、完成付款后携带凭证重试；不支持人工扫码或转账替代。
+- 用户支付宝需已开通「**AI 付**」（个人账号即可，App 内授权一次）。
+
+*Pay per call, billed by the server-issued invoice (the actual invoice prevails). No subscription, no minimum. Requires an A402-capable host agent — one that reads the `402 Payment-Needed` header, settles payment, and retries with the proof. Manual QR/transfer payment is not supported. Requires 支付宝 "AI 付" enabled on your account (individual accounts are fine).*
+
+**团队 / 定制 / 其他问题 / Teams, custom work, anything else**
+
+- 📬 **邮件（推荐）** / *Email (preferred)*：`epcz6124@agent.qq.com`，主题含 `[ui-design-pro]`
+- 💬 **GitHub Issue** / *Or open an [issue](../../issues)*：标题含 `[ui-design-pro]`；介意公开联系方式请改用邮件 / *Title it `[ui-design-pro]`. Prefer email if you'd rather not post contact details publicly.*
 
 ---
 
@@ -183,8 +211,8 @@ WCAG / ADA / EN 301 549 等正式无障碍审计须由持证机构出具。
 ## 协议 / License
 
 [MIT](./LICENSE) · Copyright © 2026 johnsmithCA-sta
-商业版另议授权条款 / Commercial version uses a separate license — see the waitlist note above.
+商业版（**UI 设计评估 Pro**）**按次计费**，条款以其平台技能页为准 / The commercial release (**UI Design Evaluation Pro**) is **billed per call** — see its platform listing for terms.
 
 ---
 
-<sub>From the **完整设计评估体系**（commercial beta — see waitlist above）by johnsmithCA-sta · v0.1.2 · 2026-09-22</sub>
+<sub>From the **完整设计评估体系** — available as **UI 设计评估 Pro** / *UI Design Evaluation Pro* (see above) — by johnsmithCA-sta · v0.1.2 · 2026-09-22</sub>
