@@ -1,7 +1,7 @@
 # CI Gate · 对比度与 CSS Token 卫生自动化门禁
 # CI Gate for Contrast & CSS Token Hygiene
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) ![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg) ![Release](https://img.shields.io/badge/Release-v0.1.1-green.svg) ![SkillHub](https://img.shields.io/badge/SkillHub-@user_65c8c185%2Fwcag-contrast-ci-orange.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) ![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg) ![Release](https://img.shields.io/badge/Release-v0.1.2-green.svg) ![SkillHub](https://img.shields.io/badge/SkillHub-@user_65c8c185%2Fwcag-contrast-ci-orange.svg)
 
 **English** — A CI gate for WCAG contrast and CSS token hygiene. Fails the build on contrast regressions and design-token drift. Pure Python standard library, zero third-party dependencies.
 
@@ -35,9 +35,9 @@ git clone https://github.com/johnsmithCA-sta/wcag-contrast-ci.git
 
 ### `contrast_checker.py` — 对比度门禁 / Contrast Gate
 
-批量校验前景 / 背景色对的 WCAG 2.x 对比度，支持 normal / large / ui 三种达标线，默认 AA 级。失守即退出码 1，CI 步骤失败。
+批量校验前景 / 背景色对的 WCAG 2.x 对比度，支持 normal / large / ui 三种达标线，默认 AA 级。失守即退出码 1，CI 步骤失败。色值可省略 `#`（`ffffff` 与 `#ffffff` 等效）；若有色值无法解析，结论会被显式标注为**无效**并以退出码 2 结束——不会伪装成「全部达标」放行。
 
-Batch-validates WCAG 2.x contrast ratios for foreground/background color pairs. Supports `normal` / `large` / `ui` thresholds (WCAG AA defaults). Exit code 1 on failure — CI step fails.
+Batch-validates WCAG 2.x contrast ratios for foreground/background color pairs. Supports `normal` / `large` / `ui` thresholds (WCAG AA defaults). Exit code 1 on failure — CI step fails. The leading `#` is optional; if any color fails to parse the verdict is marked invalid and the tool exits with code 2 instead of reporting a pass.
 
 ```bash
 cat > color-pairs.txt <<'EOF'
@@ -148,9 +148,13 @@ jobs:
 | `contrast_checker` | 全部达标 / All pass | `0` |
 | `contrast_checker` | 有失守且未指定 `--fail-on-issues` / Failures without `--fail-on-issues` | `0` |
 | `contrast_checker` | `--fail-on-issues` 且存在失守色对 / Failures with `--fail-on-issues` | `1` |
-| `contrast_checker` | 参数/输入错误 / Argument or input error | `2` |
+| `contrast_checker` | 参数/输入错误（含任一色值解析失败）/ Argument or input error (incl. unparsable color values) | `2` |
 | `extract_css_vars` | 正常完成 / Completed (parse JSON for hard-coded/dead-token signals) | `0` |
 | `extract_css_vars` | 参数/输入错误 / Argument or input error | `2` |
+
+> 退出码 `2` 同时覆盖「参数错误」与「有色值无法解析」两类输入问题：后者的结论行会显式标注无效，绝不输出「全部达标」。CI 里把 `2` 视为失败即可，不会出现「检查没跑却全绿」。
+>
+> *Exit code `2` covers both argument errors and unparsable color values. For the latter the verdict is explicitly marked invalid — never a pass — so a green CI run always means the check actually ran.*
 
 ---
 
@@ -183,4 +187,4 @@ WCAG / ADA / EN 301 549 等正式无障碍审计须由持证机构出具。
 
 ---
 
-<sub>From the **完整设计评估体系**（commercial beta — see waitlist above）by johnsmithCA-sta · v0.1.1 · 2026-09-01</sub>
+<sub>From the **完整设计评估体系**（commercial beta — see waitlist above）by johnsmithCA-sta · v0.1.2 · 2026-09-22</sub>

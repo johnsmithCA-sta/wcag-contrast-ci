@@ -10,9 +10,11 @@ contrast_checker.py —— WCAG 2.x 对比度批量计算与达标判定工具
      对比度=(L1+0.05)/(L2+0.05)）；
   2. 按上下文判定达标：normal（AA≥4.5 / AAA≥7）、large（AA≥3 / AAA≥4.5）、
      ui 图形/UI 组件（AA≥3，AAA 不适用）；
-  3. 支持色值：#hex（3/6 位，兼容 4/8 位）、rgb() / rgba()（alpha 混合到背景并提示）、
-     常见 16 具名色；
-  4. 输出 Markdown 表格 + 末尾"失守清单"（供门槛扫描直接使用）；--json 输出完整 JSON。
+  3. 支持色值：#hex（3/6 位，兼容 4/8 位）、**裸 hex（可省略 #）**、
+     rgb() / rgba()（alpha 混合到背景并提示）、常见 16 具名色；
+  4. 输出 Markdown 表格 + 末尾"失守清单"（供门槛扫描直接使用）；--json 输出完整 JSON；
+  5. **解析失败不再静默**：任一色值无法解析时输出醒目告警、结论行显式标注"无效"
+     （不得据此判定"全部达标"），JSON 带 parse_failed / verdict_valid，且退出码为 2。
 
 示例命令：
   python3 contrast_checker.py --pairs "#5f6672,#ffffff" --pairs "rgb(14,159,142),#fff"
@@ -20,11 +22,16 @@ contrast_checker.py —— WCAG 2.x 对比度批量计算与达标判定工具
   python3 contrast_checker.py --file color_pairs.json --json out.json --threshold 4.5
 
 参数：
-  --pairs     可多次传入，每项 "fg,bg[,context]"
-  --file      txt（每行 fg,bg[,context]，# 开头为注释）或 json
+  --pairs     可多次传入，每项 "fg,bg[,context]"（色值带不带 # 均可）
+  --file      txt（每行 fg,bg[,context]，// 开头为注释）或 json
               （[{"fg":...,"bg":...,"context":...}, ...]）
   --json      完整结果 JSON 输出路径（stdout 仍打印表格）
   --threshold 自定义 AA 达标线（覆盖各 context 默认 AA 阈值）
+
+退出码：0=全部达标（或失守但未开 --fail-on-issues）；1=--fail-on-issues 且有失守；2=输入错误/色值解析失败。
+
+⚠️ 2026-09-22 修复（v0.1.2）：此前色值缺 # 前缀会整批"解析失败"，但末尾仍打印
+   「失守清单（0 项）… 全部达标 ✓」——假成功。现已改为裸 hex 自动兼容 + 解析失败显式失败。
 
 仅使用 Python 标准库（re/json/argparse/sys），无第三方依赖。
 """
@@ -53,12 +60,15 @@ CONTEXT_ALIASES = {'text': 'normal', 'graphic': 'ui', 'graphics': 'ui', 'compone
 
 
 def parse_color(s):
-    """解析色值为 (r, g, b, alpha)，alpha∈[0,1]。支持 #hex / rgb() / rgba() / 具名色。"""
+    """解析色值为 (r, g, b, alpha)，alpha∈[0,1]。支持 #hex / 裸 hex / rgb() / rgba() / 具名色。"""
     s = s.strip().lower()
     if not s:
         raise ValueError('空色值')
     if s in NAMED_COLORS:
         s = NAMED_COLORS[s]
+    # 裸 hex 兼容（v0.1.2 修复：缺 # 的 3/4/6/8 位 hex 不再整批解析失败）
+    if not s.startswith(('#', 'rgb', 'hsl')) and re.fullmatch(r'[0-9a-f]{3,8}', s):
+        s = '#' + s
     m = re.fullmatch(r'#([0-9a-f]{6})([0-9a-f]{2})?', s)
     if m:
         r, g, b = (int(m.group(1)[i:i + 2], 16) for i in (0, 2, 4))
@@ -240,12 +250,16 @@ def md_table(headers, rows):
 
 
 def print_results(results, errors, source_desc, threshold_override):
-    """stdout 打印表格与失守清单。"""
+    """stdout 打印表格与失守清单。解析失败时必须显式失败，禁止输出"全部达标"（v0.1.2）。"""
     print('# 对比度批量计算报告（WCAG 2.x）')
     print(f'- 输入：{source_desc}；色对 {len(results)} 组'
           + (f'；解析失败 {len(errors)} 组' if errors else ''))
     if threshold_override is not None:
         print(f'- 自定义 AA 达标线：{threshold_override}')
+    if errors:
+        print()
+        print(f'⚠️⚠️ 输入校验失败：{len(errors)} 组色值无法解析 → **本次结论无效**，')
+        print('    不得作为"达标/失守"判定依据（修复色值后重跑）。')
     print()
 
     if results:
@@ -273,14 +287,21 @@ def print_results(results, errors, source_desc, threshold_override):
         rows = [[r['index'], r['fg'], r['bg'], f"{r['contrast']:.2f}:1",
                  f"≥{r['threshold_aa']:g}", r['context']] for r in failed]
         print(md_table(['序号', '前景', '背景', '对比度', 'AA 要求', 'context'], rows))
+    elif errors:
+        print(f'⚠️ 无可判定项：{len(errors)} 组色值解析失败，结论无效 —— **不构成"全部达标"**。')
+        print('（修复下面解析失败项后重跑；完整理由见文件头 v0.1.2 修复说明）')
     else:
         print('全部达标 ✓')
 
 
 def main():
-    ap = argparse.ArgumentParser(description='WCAG 2.x 对比度批量计算与达标判定工具（设计评估工具链）')
-    ap.add_argument('--pairs', action='append', help='色对 "fg,bg[,context]"，可多次传入')
-    ap.add_argument('--file', help='txt（每行 fg,bg[,context]）或 json 文件')
+    ap = argparse.ArgumentParser(
+        description='WCAG 2.x 对比度批量计算与达标判定工具（设计评估工具链）',
+        epilog='色值带不带 # 均可（#fbbf24 或 fbbf24）。txt 注释行用 // 开头（不要用 #，'
+               '会被当成 hex 色值）。退出码：0 达标 / 1 --fail-on-issues 且有失守 / 2 输入错误（含色值解析失败）。'
+    )
+    ap.add_argument('--pairs', action='append', help='色对 "fg,bg[,context]"，可多次传入（色值可省略 #）')
+    ap.add_argument('--file', help='txt（每行 fg,bg[,context]，// 开头为注释）或 json 文件')
     ap.add_argument('--json', dest='json_out', help='完整结果 JSON 输出路径（stdout 仍打印表格）')
     ap.add_argument('--threshold', type=float, help='自定义 AA 达标线（覆盖各 context 默认值）')
     ap.add_argument('--fail-on-issues', action='store_true',
@@ -313,6 +334,8 @@ def main():
                 'total': len(results),
                 'passed': sum(1 for r in results if r['pass']),
                 'failed': sum(1 for r in results if not r['pass']),
+                'parse_failed': len(errors),
+                'verdict_valid': not errors,
                 'max_contrast': max((r['contrast'] for r in results), default=None),
                 'min_contrast': min((r['contrast'] for r in results), default=None),
             },
@@ -321,6 +344,10 @@ def main():
         with open(args.json_out, 'w', encoding='utf-8') as f:
             json.dump(out, f, ensure_ascii=False, indent=2)
         print(f'[已输出] JSON 结果 → {args.json_out}', file=sys.stderr)
+
+    if errors:
+        print(f'[输入错误] {len(errors)} 组色值无法解析，结论无效，退出码 2', file=sys.stderr)
+        sys.exit(2)
 
     if args.fail_on_issues and any(not r['pass'] for r in results):
         n_fail = sum(1 for r in results if not r['pass'])

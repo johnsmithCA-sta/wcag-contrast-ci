@@ -4,7 +4,7 @@ slug: wcag-contrast-ci
 displayName: 无障碍对比度与 Token 卫生门禁
 summary: 零依赖的 WCAG 对比度与设计 Token 卫生检查：批量算对比度 + CSS 变量核验，可独立接入 CI
 description: 无障碍对比度与设计 Token 卫生的 CI 门禁工具。当用户要"检查网页对比度、WCAG AA/AAA 对比度判定、批量计算色对对比度、CSS 变量/Token 卫生核验、扫描硬编码色值、检测死 Token、接入 GitHub Actions CI 门禁"时使用。纯 Python 标准库零第三方依赖，可独立分发。完整设计评估体系（八维评分/视觉层级/触控目标）见商业版。不适用于：完整设计质量评估。
-version: 0.1.1
+version: 0.1.2
 license: MIT
 author: johnsmithCA-sta
 homepage: https://github.com/johnsmithCA-sta/wcag-contrast-ci
@@ -32,10 +32,11 @@ homepage: https://github.com/johnsmithCA-sta/wcag-contrast-ci
 
 ### Step 1 对比度门禁（contrast_checker.py）
 
-批量校验前景/背景色对的 WCAG 2.x 对比度，支持 normal / large / ui 三种达标线，默认 AA 级。失守即退出码 1，CI 步骤失败。
+批量校验前景/背景色对的 WCAG 2.x 对比度，支持 normal / large / ui 三种达标线，默认 AA 级。失守即退出码 1，CI 步骤失败；遇色值解析失败则结论无效、退出码 2（不会被当成「全部达标」放行）。
 
 ```bash
-# 方式一：色对清单文件（每行 fg,bg[,context]，# 开头为注释）
+# 方式一：色对清单文件（每行 fg,bg[,context]，注释行用 // 开头）
+# 色值可省略 #（ffffff 与 #ffffff 等效）；不要用 # 当注释符，它会与 hex 色值冲突
 cat > color-pairs.txt <<'EOF'
 #ffffff,#1a2c44,normal
 #64748d,#ffffff,normal
@@ -60,8 +61,9 @@ python3 scripts/contrast_checker.py --file color-pairs.txt --json result.json --
 | ui | 图形对象/UI 组件 | ≥3.0 | — |
 
 - `--threshold` 可覆盖各 context 默认 AA 阈值
-- JSON 结构含 `summary.passed/failed`、`failed[]`（失守详情含色值/对比度/context/达标线）
-- 支持色值格式：`#hex`（3/6/8 位）、`rgb()` / `rgba()`（alpha 混合到背景并提示）、常见 16 具名色
+- JSON 结构含 `summary.passed/failed/parse_failed/verdict_valid`、`failed[]`（失守详情含色值/对比度/context/达标线）
+- `summary.verdict_valid` 为 `false` 表示有色值未能解析，此次达标结论不可采信
+- 支持色值格式：`#hex`（3/6/8 位，可省略 `#`）、`rgb()` / `rgba()`（alpha 混合到背景并提示）、常见 16 具名色
 
 ### Step 2 Token 卫生门禁（extract_css_vars.py）
 
@@ -108,7 +110,7 @@ jobs:
 |---|---|---|
 | contrast_checker | 全部达标 / 有失守且未指定 `--fail-on-issues` | 0 |
 | contrast_checker | `--fail-on-issues` 且存在失守色对 | 1 |
-| contrast_checker | 参数/输入错误 | 2 |
+| contrast_checker | 参数/输入错误（含色值解析失败 —— 此时结论无效） | 2 |
 | extract_css_vars | 正常完成（含发现硬编码/死 Token，需自行解析 JSON 判定） | 0 |
 | extract_css_vars | 参数/输入错误 | 2 |
 

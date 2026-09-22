@@ -8,14 +8,15 @@
 
 ```bash
 mkdir -p ci-tools && cd ci-tools
-cp /path/to/ui-design-eval/scripts/contrast_checker.py .
-cp /path/to/ui-design-eval/scripts/extract_css_vars.py .
+cp /path/to/wcag-contrast-ci/scripts/contrast_checker.py .
+cp /path/to/wcag-contrast-ci/scripts/extract_css_vars.py .
 ```
 
 ## contrast_checker.py —— 对比度门禁
 
 ```bash
-# 1) 色对清单文件（每行 fg,bg[,context]，# 开头为注释；context: normal|large|ui）
+# 1) 色对清单文件（每行 fg,bg[,context]，注释行用 // 开头；context: normal|large|ui）
+#    色值可省略 #（ffffff 与 #ffffff 等效）；不要用 # 当注释符，它与 hex 色值冲突
 cat > color-pairs.txt <<'EOF'
 #ffffff,#1a2c44,normal
 #64748d,#ffffff,normal
@@ -31,7 +32,8 @@ python3 contrast_checker.py --file color-pairs.txt --json result.json --fail-on-
 
 - 默认达标线：normal ≥4.5（WCAG AA 正文）、large ≥3（大字）、ui ≥3（图形对象）；`--threshold` 可覆盖
 - `--pairs "#fff,#000,normal"` 可多次传入，适合单条快速检查
-- JSON 结构含 `summary.passed/failed`、`failed[]`（失守详情含色值/对比度/context/达标线）
+- JSON 结构含 `summary.passed/failed/parse_failed/verdict_valid`、`failed[]`（失守详情含色值/对比度/context/达标线）
+- ⚠️ **`verdict_valid=false` 表示有色值解析失败，此时不得采信达标结论**（解析失败会显式告警并以退出码 2 结束）
 
 ## extract_css_vars.py —— Token 卫生门禁
 
@@ -67,7 +69,7 @@ jobs:
 |---|---|---|
 | contrast_checker | 全部达标 / 有失守且未指定 `--fail-on-issues` | 0 |
 | contrast_checker | `--fail-on-issues` 且存在失守色对 | 1 |
-| contrast_checker | 参数/输入错误 | 2 |
+| contrast_checker | 参数/输入错误（含**任一色值解析失败**） | 2 |
 | extract_css_vars | 正常完成（含发现硬编码/死 Token，需自行解析 JSON 判定） | 0 |
 | extract_css_vars | 参数/输入错误 | 2 |
 
